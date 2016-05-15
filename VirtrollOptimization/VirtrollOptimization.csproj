@@ -32,10 +32,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=c7439020c8fedf87">
+      <Private>False</Private>
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="Scalarm">
+      <HintPath>..\libs\Scalarm.dll</HintPath>
+    </Reference>
+    <Reference Include="Optimization">
+      <HintPath>..\libs\Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VirtrollOptimizationMain.cs" />
+    <Compile Include="ScalarmParameter.cs" />
+    <Compile Include="SupervisorConfig.cs" />
+    <Compile Include="HookeJeevesUtils.cs" />
+    <Compile Include="GeneticUtils.cs" />
+    <Compile Include="CommonOptimizationUtils.cs" />
+    <Compile Include="SupervisorConfigFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
