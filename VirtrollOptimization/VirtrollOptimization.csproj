@@ -49,10 +49,19 @@
     <Compile Include="VirtrollOptimizationMain.cs" />
     <Compile Include="ScalarmParameter.cs" />
     <Compile Include="SupervisorConfig.cs" />
-    <Compile Include="HookeJeevesUtils.cs" />
-    <Compile Include="GeneticUtils.cs" />
-    <Compile Include="CommonOptimizationUtils.cs" />
     <Compile Include="SupervisorConfigFactory.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="OptimizationUtils\CommonOptimizationUtils.cs" />
+    <Compile Include="OptimizationUtils\GeneticUtils.cs" />
+    <Compile Include="OptimizationUtils\HookeJeevesUtils.cs" />
+    <Compile Include="OptimizationSupervisorConfig.cs" />
+    <Compile Include="OptimizationScalarmParameter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="OptimizationUtils\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
 </Project>

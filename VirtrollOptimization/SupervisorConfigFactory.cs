@@ -28,15 +28,15 @@ namespace VirtrollOptimization
 				configText += line;
 			}
 
-			Console.WriteLine("Config read from stdin:");
-			Console.WriteLine(configText);
+			Logger.Info("Config read from stdin:");
+			Logger.Info(configText);
 
 			return new SupervisorConfig(configText);
 		}
 
 		public static string ReadFromPath(string filePath = "config.json") {
 			string configText = System.IO.File.ReadAllText(filePath);
-			Console.WriteLine("Config read from {0}", filePath);
+			Logger.Info("Config read from {0}", filePath);
 
 			return new SupervisorConfig(configText);
 		}

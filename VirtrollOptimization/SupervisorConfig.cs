@@ -8,68 +8,68 @@ using System.Linq;
 
 namespace VirtrollOptimization
 {
+	/// <summary>
+	/// Structurized configuration passed to Scalarm Supervisor
+	/// See README.md in VirtrollOptimization project for configuration examples.
+	/// </summary>
 	public class SupervisorConfig
 	{
-		public string ExperimentManagerAddress { get; set; }
+		public string ExperimentManagerAddress { public get; set; }
 		public string ExperimentManagerUrl {
 			get {
 				return String.Format("https://{0}", this.ExperimentManagerAddress);
 			}
 		}
 
-		public ScalarmParameter[] Parameters { get; set; }
-		public string SimulationId { get; set; }
-		public string ExperimentId { get; set; }
+		public ScalarmParameter[] Parameters { public get; set; }
+		public string SimulationId { public get; set; }
+		public string ExperimentId { public get; set; }
 
-		public string MethodType { get; set; }
-		public bool IsFakeExperiment { get; set; }
+		public string MethodType { public get; set; }
+		public Boolean IsFakeExperiment { public get; set; }
 
-		public string ExperimentManagerProxyPath { get; set; }
-		public string ExperimentManagerLogin { get; set; }
-		public string ExperimentManagerPassword { get; set; }
+		public string ExperimentManagerProxyPath { public get; set; }
+		public string ExperimentManagerLogin { public get; set; }
+		public string ExperimentManagerPassword { public get; set; }
 
-		public static SupervisorConfig ReadFromStdin() {
-			string configText = "";
-			string line;
-			while ((line = Console.ReadLine()) != null && line != "") {
-				configText += line;
-			}
-
-			Console.WriteLine("Config read from stdin:");
-			Console.WriteLine(configText);
-
-			return new SupervisorConfig(configText);
-		}
-
-		public static SupervisorConfig ReadFromPath(string filePath = "config.json") {
-			string configText = System.IO.File.ReadAllText(filePath);
-			Console.WriteLine("Config read from {0}", filePath);
-
-			return new SupervisorConfig(configText);
-		}
+		public JObject RawAppConfig { public get; set; }
 
 		public SupervisorConfig(string configText)
 		{
 			JObject appConfig = JObject.Parse(configText);
+			this.RawAppConfig = appConfig;
 
 			this.ExperimentManagerAddress = appConfig["address"].ToObject<string>();
 
 			this.Parameters = appConfig["parameters"].ToObject<ScalarmParameter[]>();
 
-			var simulationIdJson = appConfig["simulation_id"];
-			this.SimulationId = (simulationIdJson != null) ? simulationIdJson.ToObject<string>() : null;
-			this.ExperimentId = 
+			// TODO: remove code
+//			var simulationIdJson = appConfig["simulation_id"];
+//			this.SimulationId = (simulationIdJson != null) ? simulationIdJson.ToObject<string>() : null;
+
+			this.SimulationId = OptionalJsonGet<string>(appConfig, "simulation_id");
+			this.ExperimentId = OptionalJsonGet<string>(appConfig, "experiment_id");
 
 			this.MethodType = appConfig["method_type"].ToObject<string>();
 
-			this.IsFakeExperiment = (appConfig["fake_experiment"] != null ? appConfig["fake_experiment"].ToObject<bool>() : false);
+			this.IsFakeExperiment = OptionalJsonGet<Boolean>(appConfig, "fake_experiment", false);
 
+			// If one of these is not speficied - will throw an error
 			if (appConfig["experiment_manager_proxy_path"] != null) {
 				this.ExperimentManagerProxyPath = appConfig["experiment_manager_proxy_path"].ToObject<string>();
 			} else {
 				this.ExperimentManagerLogin = appConfig["user"].ToObject<string>();
 				this.ExperimentManagerPassword = appConfig["password"].ToObject<string>();
 			}
+		}
+
+		/// <summary>
+		/// Try to get a property value of T type from jObject JSON object.
+		/// If property does not exists, return defaultValue (null, if not specified).
+		/// </summary>
+		public static T OptionalJsonGet<T>(JObject jObject, string property, T defaultValue = null) {
+			var buffer = jObject[property];
+			return buffer != null ? buffer.ToObject<T>() : defaultValue;
 		}
 
 		/// <summary>
@@ -95,20 +95,20 @@ namespace VirtrollOptimization
 				// use experiment or create new with simulation_id
 				string experimentId = null;
 				if (this.SimulationId != null && this.ExperimentId == null) {
-					Console.WriteLine("Using simulation {0}/simulations/{1} to instantiate experiment",  experimentManagerUrl, simulationId);
+					Logger.Info("Using simulation {0}/simulations/{1} to instantiate experiment",  experimentManagerUrl, simulationId);
 					var scenario = client.GetScenarioById(this.SimulationId);
 					experiment = scenario.CreateSupervisedExperiment(null, new Dictionary<string, object> {
 						{"name", String.Format("Optimization of {0} using {0}", scenario.Name, this.MethodType)}
 					});
 					this.ExperimentId = experiment.Id;
 				} else {
-					Console.WriteLine("Using experiment provided by ID: {0}", this.ExperimentId);
+					Logger.Info("Using experiment provided by ID: {0}", this.ExperimentId);
 					experiment =
 						client.GetExperimentById<Scalarm.SupervisedExperiment>(experimentId);
 				}
 			}
 
-			Console.WriteLine ("Using experiment {0}/experiments/{1}", this.ExperimentManagerUrl, experiment.Id);
+			Logger.Info ("Using experiment {0}/experiments/{1}", this.ExperimentManagerUrl, experiment.Id);
 			return experiment;
 		}
 
@@ -121,7 +121,7 @@ namespace VirtrollOptimization
 			List<InputProperties> properties = new List<InputProperties>(this.Parameters.Count());
 			{
 				for (int i=0; i < this.Parameters.Count(); ++i) {
-					Console.WriteLine(this.Parameters[i].ToString());
+					Logger.Info(this.Parameters[i].ToString());
 					properties[i] = new InputProperties(InputValuesType.Range, this.Parameters[i].Range);
 				}
 			}
