@@ -36,15 +36,20 @@ namespace VirtrollOptimization
 			this.OptimizationMaxError = OptionalJsonGet<double>(appConfig, "optimization_max_error", 0.00000001);
 			this.OptimizationMaxIterations = OptionalJsonGet<int>(appConfig, "optimization_max_iterations", 15);
 
-			this.GeneticPopulationStart = OptionalJsonGet<int>(appConfig, "genetic_population_start", 10);
-			this.GeneticPopulationMax = OptionalJsonGet<int>(appConfig, "genetic_population_max", 20);
-
-			this.HookeJeevesWorkingStepMultiplier = OptionalJsonGet<double>(appConfig, "hj_working_step_multiplier", 1);
-			this.HookeJeevesParallel = OptionalJsonGet<bool>(appConfig, "hj_parallel", true);
-			// TODO: check if step sizes array is the same size as parameters count?
-			this.HookeJeevesStepSizes = appConfig["hj_step_sizes"].ToObject<double[]>();
-			// TODO: check -||-
-			this.HookeJeevesMinStepSizes = appConfig["hj_min_step_sizes"].ToObject<double[]>();
+			switch (this.MethodType) {
+			case "genetic":
+				this.GeneticPopulationStart = OptionalJsonGet<int>(appConfig, "genetic_population_start", 10);
+				this.GeneticPopulationMax = OptionalJsonGet<int>(appConfig, "genetic_population_max", 20);
+				break;
+			case "hoooke_jeeves":
+				this.HookeJeevesWorkingStepMultiplier = OptionalJsonGet<double>(appConfig, "hj_working_step_multiplier", 1);
+				this.HookeJeevesParallel = OptionalJsonGet<bool>(appConfig, "hj_parallel", true);
+				// TODO: check if step sizes array is the same size as parameters count?
+				this.HookeJeevesStepSizes = appConfig["hj_step_sizes"].ToObject<double[]>();
+				// TODO: check -||-
+				this.HookeJeevesMinStepSizes = appConfig["hj_min_step_sizes"].ToObject<double[]>();
+				break;
+			}
 		}
 	}
 }
