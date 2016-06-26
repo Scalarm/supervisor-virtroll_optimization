@@ -17,7 +17,7 @@ namespace VirtrollOptimization
 
 		public SupervisedExperiment Experiment { get; set; }
 
-		public ScalarmEvaluator(ScalarmParameter[] scalarmParameters, string moeName=null)
+		public ScalarmEvaluator(ScalarmParameter[] scalarmParameters, string moeName="moe")
 		{
 			this.ScalarmParameters = scalarmParameters;
 			this.MoeName = moeName;
@@ -64,7 +64,7 @@ namespace VirtrollOptimization
 				SimulationParams scalarmResult = FindScalarmPoint(results, optimizationPoints[i]);
 
 				// FIXME - use output by name given
-				double moe = Convert.ToDouble(scalarmResult.Output["z"]);
+				double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
 
 				optimizationPoints[i].PartialResults = new List<double>()
 				{
