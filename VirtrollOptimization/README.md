@@ -1,5 +1,6 @@
-# This is a Scalarm Virtroll Optimization Supervisor for standalone use with Scalarm Platform or as a Scalarm Experiment Supervisor plugin application.
-## For more information about Scalarm Supervisor see: https://github.com/Scalarm/scalarm_experiment_supervisor
+# Scalarm Virtroll Optimization Supervisor
+
+This is a Scalarm Virtroll Optimization Supervisor for standalone use with Scalarm Platform or as a Scalarm Experiment Supervisor plugin application. For more information about Scalarm Supervisor see: https://github.com/Scalarm/scalarm_experiment_supervisor
 
 # Dependencies
 

@@ -18,8 +18,8 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
     <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
@@ -36,26 +36,27 @@
       <Private>False</Private>
       <Package>monodevelop</Package>
     </Reference>
-    <Reference Include="Scalarm">
-      <HintPath>..\libs\Scalarm.dll</HintPath>
-    </Reference>
     <Reference Include="Optimization">
       <HintPath>..\libs\Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="RestSharp">
+      <HintPath>..\libs\RestSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VirtrollOptimizationMain.cs" />
     <Compile Include="ScalarmParameter.cs" />
     <Compile Include="SupervisorConfig.cs" />
-    <Compile Include="SupervisorConfigFactory.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="OptimizationUtils\CommonOptimizationUtils.cs" />
     <Compile Include="OptimizationUtils\GeneticUtils.cs" />
     <Compile Include="OptimizationUtils\HookeJeevesUtils.cs" />
     <Compile Include="OptimizationSupervisorConfig.cs" />
     <Compile Include="OptimizationScalarmParameter.cs" />
+    <Compile Include="OptimizationSupervisorConfigFactory.cs" />
+    <Compile Include="OptimizationUtils\ScalarmEvaluator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -63,5 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="config.json.example" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\scalarm_client_csharp\scalarm_client_csharp\scalarm_client_csharp.csproj">
+      <Project>{AC52A725-90C8-4742-AB35-C221297EE872}</Project>
+      <Name>scalarm_client_csharp</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

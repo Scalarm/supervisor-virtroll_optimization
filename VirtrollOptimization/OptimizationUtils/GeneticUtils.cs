@@ -6,9 +6,9 @@ namespace VirtrollOptimization
 {
 	public class GeneticUtils : CommonOptimizationUtils
 	{
-		Optimization.Genetic Optimizer { public get; set; }
+		Optimization.Genetic Optimizer { get; set; }
 
-		public GeneticUtils(Experiment experiment, Optimization.Genetic genetic) :
+		public GeneticUtils(SupervisedExperiment experiment, Optimization.Genetic genetic) :
 			base(experiment)
 		{
 			this.Optimizer = genetic;
@@ -18,7 +18,7 @@ namespace VirtrollOptimization
 		{
 			this.Optimizer.NextStepEvent += CommonOptimizationUtils.NextStep;
 			this.Optimizer.NewOptimumFindedEvent += CommonOptimizationUtils.NewOptimumFound;
-			this.Optimizer.EndOfCalculationEvent += CommonOptimizationUtils.EndOfCalculation;
+			this.Optimizer.EndOfCalculationEvent += this.EndOfCalculation;
 		}
 	}
 }

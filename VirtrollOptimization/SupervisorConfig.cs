@@ -14,25 +14,31 @@ namespace VirtrollOptimization
 	/// </summary>
 	public class SupervisorConfig
 	{
-		public string ExperimentManagerAddress { public get; set; }
+		public string ExperimentManagerAddress { get; set; }
 		public string ExperimentManagerUrl {
 			get {
 				return String.Format("https://{0}", this.ExperimentManagerAddress);
 			}
 		}
 
-		public ScalarmParameter[] Parameters { public get; set; }
-		public string SimulationId { public get; set; }
-		public string ExperimentId { public get; set; }
+		public ScalarmParameter[] Parameters { get; set; }
+		public string SimulationId { get; set; }
+		public string ExperimentId { get; set; }
 
-		public string MethodType { public get; set; }
-		public Boolean IsFakeExperiment { public get; set; }
+		public string MethodType { get; set; }
+		public Boolean IsFakeExperiment { get; set; }
 
-		public string ExperimentManagerProxyPath { public get; set; }
-		public string ExperimentManagerLogin { public get; set; }
-		public string ExperimentManagerPassword { public get; set; }
+		public string ExperimentManagerProxyPath { get; set; }
+		public string ExperimentManagerLogin { get; set; }
+		public string ExperimentManagerPassword { get; set; }
 
-		public JObject RawAppConfig { public get; set; }
+		public JObject RawAppConfig { get; set; }
+
+		/// <summary>
+		/// Please do not use this constructor - use new(string) instead
+		/// </summary>
+		public SupervisorConfig() : base()
+		{}
 
 		public SupervisorConfig(string configText)
 		{
@@ -47,8 +53,8 @@ namespace VirtrollOptimization
 //			var simulationIdJson = appConfig["simulation_id"];
 //			this.SimulationId = (simulationIdJson != null) ? simulationIdJson.ToObject<string>() : null;
 
-			this.SimulationId = OptionalJsonGet<string>(appConfig, "simulation_id");
-			this.ExperimentId = OptionalJsonGet<string>(appConfig, "experiment_id");
+			this.SimulationId = OptionalJsonGet<string>(appConfig, "simulation_id", null);
+			this.ExperimentId = OptionalJsonGet<string>(appConfig, "experiment_id", null);
 
 			this.MethodType = appConfig["method_type"].ToObject<string>();
 
@@ -67,7 +73,7 @@ namespace VirtrollOptimization
 		/// Try to get a property value of T type from jObject JSON object.
 		/// If property does not exists, return defaultValue (null, if not specified).
 		/// </summary>
-		public static T OptionalJsonGet<T>(JObject jObject, string property, T defaultValue = null) {
+		public static T OptionalJsonGet<T>(JObject jObject, string property, T defaultValue) {
 			var buffer = jObject[property];
 			return buffer != null ? buffer.ToObject<T>() : defaultValue;
 		}
@@ -93,22 +99,21 @@ namespace VirtrollOptimization
 				}
 				// ---
 				// use experiment or create new with simulation_id
-				string experimentId = null;
 				if (this.SimulationId != null && this.ExperimentId == null) {
-					Logger.Info("Using simulation {0}/simulations/{1} to instantiate experiment",  experimentManagerUrl, simulationId);
+					Logger.Info(string.Format("Using simulation {0}/simulations/{1} to instantiate experiment",  this.ExperimentManagerUrl, this.SimulationId));
 					var scenario = client.GetScenarioById(this.SimulationId);
 					experiment = scenario.CreateSupervisedExperiment(null, new Dictionary<string, object> {
 						{"name", String.Format("Optimization of {0} using {0}", scenario.Name, this.MethodType)}
 					});
 					this.ExperimentId = experiment.Id;
 				} else {
-					Logger.Info("Using experiment provided by ID: {0}", this.ExperimentId);
+					Logger.Info(string.Format("Using experiment provided by ID: {0}", this.ExperimentId));
 					experiment =
-						client.GetExperimentById<Scalarm.SupervisedExperiment>(experimentId);
+						client.GetExperimentById<Scalarm.SupervisedExperiment>(this.ExperimentId);
 				}
 			}
 
-			Logger.Info ("Using experiment {0}/experiments/{1}", this.ExperimentManagerUrl, experiment.Id);
+			Logger.Info(string.Format("Using experiment {0}/experiments/{1}", this.ExperimentManagerUrl, experiment.Id));
 			return experiment;
 		}
 

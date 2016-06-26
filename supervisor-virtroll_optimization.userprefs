@@ -1,31 +1,34 @@
 ﻿<Properties StartupItem="VirtrollOptimization/VirtrollOptimization.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="VirtrollOptimization/CommonOptimizationUtils.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="VirtrollOptimization/OptimizationSupervisorConfig.cs">
     <Files>
-      <File FileName="VirtrollOptimization/VirtrollOptimizationMain.cs" Line="88" Column="4" />
-      <File FileName="../ScalarmOptimization/TesterOptimization/Program.cs" Line="1" Column="1" />
-      <File FileName="../ScalarmOptimization/TesterOptimization/Logger.cs" Line="1" Column="1" />
-      <File FileName="../../../sensitivity_analysis_supervisor/Program.cs" Line="1" Column="1" />
-      <File FileName="VirtrollOptimization/ScalarmParameter.cs" Line="1" Column="1" />
-      <File FileName="VirtrollOptimization/SupervisorConfig.cs" Line="30" Column="3" />
-      <File FileName="VirtrollOptimization/HookeJeevesUtils.cs" Line="1" Column="1" />
-      <File FileName="VirtrollOptimization/CommonOptimizationUtils.cs" Line="100" Column="107" />
-      <File FileName="VirtrollOptimization/GeneticUtils.cs" Line="1" Column="1" />
-      <File FileName="VirtrollOptimization/SupervisorConfigFactory.cs" Line="1" Column="1" />
-      <File FileName="VirtrollOptimization/Logger.cs" Line="13" Column="31" />
+      <File FileName="VirtrollOptimization/SupervisorConfig.cs" Line="132" Column="5" />
+      <File FileName="VirtrollOptimization/VirtrollOptimizationMain.cs" Line="62" Column="11" />
+      <File FileName="../../../scalarm_client_csharp/scalarm_client_csharp/Client.cs" Line="51" Column="1" />
+      <File FileName="VirtrollOptimization/OptimizationUtils/GeneticUtils.cs" Line="11" Column="86" />
+      <File FileName="VirtrollOptimization/OptimizationUtils/CommonOptimizationUtils.cs" Line="19" Column="42" />
+      <File FileName="VirtrollOptimization/OptimizationSupervisorConfigFactory.cs" Line="36" Column="3" />
+      <File FileName="VirtrollOptimization/OptimizationSupervisorConfig.cs" Line="37" Column="106" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
+          <Node name="scalarm_client_csharp" expanded="True" />
           <Node name="VirtrollOptimization" expanded="True">
-            <Node name="CommonOptimizationUtils.cs" selected="True" />
+            <Node name="References" expanded="True" />
+            <Node name="OptimizationUtils" expanded="True" />
+            <Node name="OptimizationSupervisorConfig.cs" selected="True" />
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/kliput/Scalarm/scalarm_client_csharp/scalarm_client_csharp/Client.cs" line="33" column="1" />
+      <Breakpoint file="/home/kliput/Scalarm/virtroll/optimization/supervisor-virtroll_optimization/VirtrollOptimization/VirtrollOptimizationMain.cs" line="36" column="37" />
+      <Breakpoint hitAction="PrintExpression" traceExpression="{InputValuesType}" file="/home/kliput/Scalarm/virtroll/optimization/supervisor-virtroll_optimization/VirtrollOptimization/SupervisorConfig.cs" line="130" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

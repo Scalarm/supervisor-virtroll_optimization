@@ -3,12 +3,15 @@ using System.Threading;
 using System.Collections.Generic;
 using Optimization.Core;
 using Scalarm;
+using RestSharp;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace VirtrollOptimization
 {
 	class VirtrollOptimizationMain
 	{
-		public const string VERSION = "2016_06_05";
+		public const string VERSION = "2016_06_24";
 
 		static Scalarm.Client Client = null;
 		static Scalarm.Experiment Experiment = null;
@@ -18,23 +21,29 @@ namespace VirtrollOptimization
 		// Usage: mono VirtrollOptimization.exe -stdin -> will read config from stdin
 		static void Main(string[] args)
 		{
+			ServicePointManager.ServerCertificateValidationCallback +=
+				(sender, certificate, chain, sslPolicyErrors) => true;
+
 			Logger.Info("Virtroll Optimization C# Supervisor, version " + VERSION);
 
-			OptimizationSupervisorConfig config = SupervisorConfigFactory<OptimizationSupervisorConfig>.ParseArgs(args);
+			OptimizationSupervisorConfig config = OptimizationSupervisorConfigFactory.ParseArgs(args);
 
 			Scalarm.SupervisedExperiment experiment = config.GetExperiment();
 
-			// ------------- optim
-
 			List<InputProperties> parameters = config.GetInputProperties();
 
+
 			Thread optimizationRunner = null;
+
+			ScalarmEvaluator evaluator = new ScalarmEvaluator(config.Parameters, config.MoeName);
 
 			switch (config.MethodType) {
 			case "genetic":
 				{
+					var scalarmOptimizer = new CommonOptimizationUtils(experiment);
+
 					Optimization.Genetic optimizer = new Optimization.Genetic(
-						CommonOptimizationUtils.ScalarmFunctionEvaluator,
+						evaluator.ScalarmFunctionEvaluator,
 						parameters,
 						null
 					);
@@ -54,7 +63,7 @@ namespace VirtrollOptimization
 			case "hooke_jeeves":
 				{
 					Optimization.HookeJeeves optimizer = new Optimization.HookeJeeves(
-						CommonOptimizationUtils.ScalarmFunctionEvaluator,
+					evaluator.ScalarmFunctionEvaluator,
 						parameters,
 						null
 					);
@@ -81,7 +90,6 @@ namespace VirtrollOptimization
 				break;
 			default:
 				throw new Exception(String.Format("Provided method_type: \"{0}\" is not supported"));
-				break;
 			}
 
 			if (optimizationRunner != null) {

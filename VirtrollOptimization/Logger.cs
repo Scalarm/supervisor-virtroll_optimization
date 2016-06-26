@@ -4,13 +4,10 @@ namespace VirtrollOptimization
 {
 	public class Logger
 	{
-		public Logger()
+		public static void Info(string message)
 		{
-		}
-
-		public void Info(string message)
-		{
-			Logger.Info(message);
+			string date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff (zz)");
+			Console.WriteLine("[{0}] {1}", date, message);
 		}
 	}
 }

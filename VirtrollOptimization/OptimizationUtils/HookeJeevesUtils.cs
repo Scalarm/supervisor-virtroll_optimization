@@ -4,11 +4,13 @@ using Scalarm;
 
 namespace VirtrollOptimization
 {
-	public class HookeJeevesUtils
+	public class HookeJeevesUtils : CommonOptimizationUtils
 	{
-		Optimization.HookeJeeves Optimizer { public get; set; }
+		Optimization.HookeJeeves Optimizer { get; set; }
 
-		public HookeJeevesUtils(Experiment experiment, Optimization.HookeJeeves optimizer) {
+		public HookeJeevesUtils(SupervisedExperiment experiment, Optimization.HookeJeeves optimizer) :
+			base(experiment)
+		{
 			this.Optimizer = optimizer;
 		}
 
@@ -16,7 +18,7 @@ namespace VirtrollOptimization
 		{
 			this.Optimizer.NextStepEvent += CommonOptimizationUtils.NextStep;
 			this.Optimizer.NewOptimumFindedEvent += CommonOptimizationUtils.NewOptimumFound;
-			this.Optimizer.EndOfCalculationEvent += CommonOptimizationUtils.EndOfCalculation;
+			this.Optimizer.EndOfCalculationEvent += this.EndOfCalculation;
 		}
 	}
 }

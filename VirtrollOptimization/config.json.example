@@ -1,0 +1,19 @@
+{
+  "method_type": "genetic",
+  "experiment_id": "576d800920a6f1173210ef6d",
+  "user": "plgjliput",
+  "password": "Pass1026",
+  "parameters": [
+    {
+      "id":"x",
+      "min":-10,
+      "max":10
+    },
+    {
+      "id":"y",
+      "min":-10,
+      "max":10
+    }
+  ],
+  "address": "localhost:3001"
+}
