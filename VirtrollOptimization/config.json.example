@@ -1,19 +1,36 @@
 {
-  "method_type": "genetic",
-  "experiment_id": "576d800920a6f1173210ef6d",
-  "user": "plgjliput",
-  "password": "Pass1026",
+  "address": "system.scalarm.com",
+  
+  "simulation_id": "576d7e8a20a6f1173210e825",
+  
+  "user": "basicauthuser",
+  "password": "basicauthpassword",
   "parameters": [
     {
       "id":"x",
+      "type": "float",
       "min":-10,
       "max":10
     },
     {
       "id":"y",
-      "min":-10,
-      "max":10
+      "type": "float",
+      "min":-20,
+      "max":20
     }
   ],
-  "address": "localhost:3001"
+  "moe_name": "z",
+  
+  "optimization_max_error": 0.0000001,
+  "optimization_max_iterations": 16,
+    
+  "method_type": "hooke_jeeves",
+  "hj_working_step_multiplier": 3,
+  "hj_parallel": true,
+  "hj_step_sizes": [5, 7],
+  "hj_min_step_sizes": [0.0001, 0.0002],
+  
+  "__//method_type": "genetic",
+  "__//genetic_population_start": 12,
+  "__//genetic_population_max": 20
 }

@@ -8,14 +8,24 @@ using Newtonsoft.Json;
 
 namespace VirtrollOptimization
 {
-	public class CommonOptimizationUtils
+	public abstract class CommonOptimizationUtils
 	{
 		public SupervisedExperiment Experiment { get; set; }
+
+		protected string _methodType;
 
 		public void EndOfCalculation(object sender, OptimumEventArgs e) {
 			// TODO resolve results to JSON
 			var finalResults = new Dictionary<string, object>();
-			finalResults.Add("point", e.Point.Inputs);
+			finalResults.Add("method_type", this._methodType);
+			finalResults.Add("step", e.Step);
+			finalResults.Add("eval_execution_count", e.EvalExecutionCount);
+			finalResults.Add("parameters", e.Point.Inputs);
+			finalResults.Add("values", e.Point.PartialResults);
+			finalResults.Add("global_value", e.Point.Result);
+			// TODO: pareto
+			// TODO: population
+
 			this.Experiment.MarkAsComplete(JsonConvert.SerializeObject(finalResults));
 		}
 

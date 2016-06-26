@@ -126,8 +126,8 @@ namespace VirtrollOptimization
 			List<InputProperties> properties = new List<InputProperties>(this.Parameters.Count());
 			{
 				for (int i=0; i < this.Parameters.Count(); ++i) {
-					Logger.Info(this.Parameters[i].ToString());
-					properties[i] = new InputProperties(InputValuesType.Range, this.Parameters[i].Range);
+//					Logger.Info(this.Parameters[i].ToString());
+					properties.Add(new InputProperties(InputValuesType.Range, this.Parameters[i].Range));
 				}
 			}
 

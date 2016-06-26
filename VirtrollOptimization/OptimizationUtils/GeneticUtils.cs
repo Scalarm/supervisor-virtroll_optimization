@@ -11,6 +11,7 @@ namespace VirtrollOptimization
 		public GeneticUtils(SupervisedExperiment experiment, Optimization.Genetic genetic) :
 			base(experiment)
 		{
+			this._methodType = "genetic";
 			this.Optimizer = genetic;
 		}
 

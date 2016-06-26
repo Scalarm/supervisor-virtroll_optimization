@@ -35,13 +35,11 @@ namespace VirtrollOptimization
 
 			Thread optimizationRunner = null;
 
-			ScalarmEvaluator evaluator = new ScalarmEvaluator(config.Parameters, config.MoeName);
+			ScalarmEvaluator evaluator = new ScalarmEvaluator(experiment, config.Parameters, config.MoeName);
 
 			switch (config.MethodType) {
 			case "genetic":
 				{
-					var scalarmOptimizer = new CommonOptimizationUtils(experiment);
-
 					Optimization.Genetic optimizer = new Optimization.Genetic(
 						evaluator.ScalarmFunctionEvaluator,
 						parameters,
@@ -70,17 +68,11 @@ namespace VirtrollOptimization
 
 					new HookeJeevesUtils(experiment, optimizer).BindEvents();
 
-					// TODO: step size from config for each parameter
-					double[] fStepSize = new double[] { 8.7, 2180, 5 };
-					// TODO: min step size from config for each parameter
-					double[] fMinStepSize = new double[] { 0.000000001, 0.000000001, 0.000000001 };
-
 					new Thread(() =>
 					{
 						optimizer.Optimize(
-							// config.Parameters, ale Optimization Parameters
-							fStepSize, 
-							fMinStepSize, 
+							config.HookeJeevesStepSizes, 
+							config.HookeJeevesMinStepSizes, 
 							config.HookeJeevesWorkingStepMultiplier,
 							config.OptimizationMaxError,
 							config.OptimizationMaxIterations,

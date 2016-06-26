@@ -20,10 +20,11 @@ namespace VirtrollOptimization
 
 		public SupervisedExperiment Experiment { get; set; }
 
-		public ScalarmEvaluator(ScalarmParameter[] scalarmParameters, string moeName="moe")
+		public ScalarmEvaluator(SupervisedExperiment experiment, ScalarmParameter[] scalarmParameters, string moeName="moe")
 		{
 			this.ScalarmParameters = scalarmParameters;
 			this.MoeName = moeName;
+			this.Experiment = experiment;
 		}
 
 		// TODO: this should be a class, which have a simulation input definition in its state
@@ -38,7 +39,7 @@ namespace VirtrollOptimization
 
 				Scalarm.ValuesMap paramValues = new Scalarm.ValuesMap();
 
-				for (int sp = 0; i < this.ScalarmParameters.Length; ++sp) {
+				for (int sp = 0; sp < this.ScalarmParameters.Length; ++sp) {
 					paramValues.Add(this.ScalarmParameters[sp].id, optPoint.Inputs[sp]);
 				}
 
@@ -47,7 +48,7 @@ namespace VirtrollOptimization
 
 			/// delegate computations to Scalarm
 
-			((SupervisedExperiment)Experiment).SchedulePoints(scalarmPoints);
+			Experiment.SchedulePoints(scalarmPoints);
 
 			int wc = 0;
 			while (!this.WaitAndIgnoreExceptions())
@@ -64,7 +65,7 @@ namespace VirtrollOptimization
 			for (int i = 0; i < optimizationPoints.Count; ++i)
 			{
 				// TODO: fun(OptimizationPoint) -> result
-				SimulationParams scalarmResult = FindScalarmPoint(results, optimizationPoints[i]);
+				SimulationParams scalarmResult = this.FindScalarmPoint(results, optimizationPoints[i]);
 
 				// FIXME - use output by name given
 				double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
@@ -101,20 +102,22 @@ namespace VirtrollOptimization
 		/// Return a specific SimulationParams (Scalarm Point) from collection that matches the provided
 		/// OptimizationPoint (that is generated in optimization lib).
 		/// </summary>
-		public static SimulationParams FindScalarmPoint(IList<SimulationParams> scalarmResults, OptimizationPoint optimizationPoint)
+		public SimulationParams FindScalarmPoint(IList<SimulationParams> scalarmResults, OptimizationPoint optimizationPoint)
 		{
 			// TODO: let's assume, we have a SimulationParams list with indexes and we know which OP point have which index...
 			// TODO: convert OptimizationPoint to SimulationParams OR provide SimulationParams directly to this fun
 			// TODO: find in SimulationParams
 
-			string[] oids = scalarmResults.First().Output.Keys.ToArray();
+			// FIXME: optimize - compute it earlier
+			string[] iids = this.ScalarmParameters.Select(i => i.id).ToArray();
 
 			// FIXME: maybe just use conversions as in optimization example code
 
+			var optPointJson = JsonConvert.SerializeObject(optimizationPoint.Inputs);
+
+			// TODO: json repr cache?
 			var res = scalarmResults.Where(
-				r => Enumerable.SequenceEqual(
-					r.Input.Flatten(oids).Select(x => Convert.ToDouble(x)), optimizationPoint.Inputs
-				)
+				r => JsonConvert.SerializeObject(r.Input.Flatten(iids)) == optPointJson
 			);
 
 			if (res.Any()) {

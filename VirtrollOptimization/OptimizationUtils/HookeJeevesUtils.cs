@@ -11,6 +11,7 @@ namespace VirtrollOptimization
 		public HookeJeevesUtils(SupervisedExperiment experiment, Optimization.HookeJeeves optimizer) :
 			base(experiment)
 		{
+			this._methodType = "hooke_jeeves";
 			this.Optimizer = optimizer;
 		}
 
