@@ -3,6 +3,9 @@ using Optimization.Core;
 using Scalarm;
 using System.Collections.Generic;
 using System.Threading;
+using System.Dynamic.Utils;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace VirtrollOptimization
 {
@@ -104,71 +107,24 @@ namespace VirtrollOptimization
 			// TODO: convert OptimizationPoint to SimulationParams OR provide SimulationParams directly to this fun
 			// TODO: find in SimulationParams
 
-			//			string[] outputIds = scalarmResults.First().Output.Keys.ToArray();
+			string[] oids = scalarmResults.First().Output.Keys.ToArray();
 
-			// FIXME: maybe just use the code from SA
+			// FIXME: maybe just use conversions as in optimization example code
 
-			for (int i = 0; i < scalarmResults.Count; ++i)
-			{
-				var o = scalarmResults[i].Input;
+			var res = scalarmResults.Where(
+				r => Enumerable.SequenceEqual(
+					r.Input.Flatten(oids).Select(x => Convert.ToDouble(x)), optimizationPoint.Inputs
+				)
+			);
 
-				if ((double)o["0"] == optimizationPoint.Inputs[0]
-				    && (double)o["1"] == optimizationPoint.Inputs[1]
-				    && (double)o["2"] == optimizationPoint.Inputs[2])
-				{
-					return scalarmResults[i];
-				}
+			if (res.Any()) {
+				return res.Last();
+			} else {
+				Logger.Error(String.Format(
+					"Result not found for optimization point{0}", JsonConvert.SerializeObject(optimizationPoint.Inputs)
+					));
+				return null;
 			}
-
-			for (int i = 0; i < scalarmResults.Count; ++i)
-			{
-				var o = scalarmResults[i].Input;
-
-				if ((float)o["0"] == (float)optimizationPoint.Inputs[0]
-				    && (float)o["1"] == (float)optimizationPoint.Inputs[1]
-				    && (float)o["2"] == (float)optimizationPoint.Inputs[2])
-				{
-					return scalarmResults[i];
-				}
-			}
-
-			for (int i = 0; i < scalarmResults.Count; ++i)
-			{
-				var o = scalarmResults[i].Input;
-
-				if ((double)o["0"] == optimizationPoint.Inputs[0]
-				    && (double)o["1"] == optimizationPoint.Inputs[1])
-				{
-					Logger.Info("Point not found");
-					return scalarmResults[i];
-				}
-			}
-
-			for (int i = 0; i < scalarmResults.Count; ++i)
-			{
-				var o = scalarmResults[i].Input;
-
-				if ((double)o["0"] == optimizationPoint.Inputs[0]
-				    && (double)o["2"] == optimizationPoint.Inputs[2])
-				{
-					Logger.Info("Point not found");
-					return scalarmResults[i];
-				}
-			}
-
-			for (int i = 0; i < scalarmResults.Count; ++i)
-			{
-				var o = scalarmResults[i].Input;
-
-				if ((double)o["1"] == optimizationPoint.Inputs[1]
-				    && (double)o["2"] == optimizationPoint.Inputs[2])
-				{
-					Logger.Info("Point not found");
-					return scalarmResults[i];
-				}
-			}
-
-			return null;
 		}
 	}
 }
