@@ -80,6 +80,26 @@ namespace VirtrollOptimization
 					}).Start();
 				}
 				break;
+			case "pso":
+			{
+				Optimization.Pso optimizer = new Optimization.Pso(
+					evaluator.ScalarmFunctionEvaluator,
+					parameters,
+					null
+					);
+
+				new PsoUtils(experiment, optimizer).BindEvents();
+
+				new Thread(() =>
+				           {
+					optimizer.Optimize(
+						config.PsoParticlesCount,
+						config.OptimizationMaxError,
+						config.OptimizationMaxIterations);
+				}).Start();
+			}
+				break;
+
 			default:
 				throw new Exception(String.Format("Provided method_type: \"{0}\" is not supported"));
 			}

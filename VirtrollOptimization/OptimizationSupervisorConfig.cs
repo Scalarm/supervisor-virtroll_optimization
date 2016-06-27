@@ -20,6 +20,8 @@ namespace VirtrollOptimization
 		// e.g. { 0.000000001, 0.000000001, 0.000000001 }
 		public double[] HookeJeevesMinStepSizes { get; set; }
 
+		public int PsoParticlesCount { get; set; }
+
 
 		/// <summary>
 		/// Please do not use this constructor - use new(string) instead
@@ -48,6 +50,9 @@ namespace VirtrollOptimization
 				this.HookeJeevesStepSizes = appConfig["hj_step_sizes"].ToObject<double[]>();
 				// TODO: check -||-
 				this.HookeJeevesMinStepSizes = appConfig["hj_min_step_sizes"].ToObject<double[]>();
+				break;
+			case "pso":
+				this.PsoParticlesCount = OptionalJsonGet<int>(appConfig, "pso_particles_count", 1);
 				break;
 			}
 		}

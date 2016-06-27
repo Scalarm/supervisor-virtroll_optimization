@@ -14,6 +14,8 @@ namespace VirtrollOptimization
 
 		protected string _methodType;
 
+		public abstract void BindEvents();
+
 		public void EndOfCalculation(object sender, OptimumEventArgs e) {
 			// TODO resolve results to JSON
 			var finalResults = new Dictionary<string, object>();
@@ -56,7 +58,6 @@ namespace VirtrollOptimization
 		public CommonOptimizationUtils(SupervisedExperiment experiment) {
 			this.Experiment = experiment;
 		}
-
 
 	}
 }

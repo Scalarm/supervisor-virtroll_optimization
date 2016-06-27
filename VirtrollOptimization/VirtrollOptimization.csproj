@@ -36,9 +36,6 @@
       <Private>False</Private>
       <Package>monodevelop</Package>
     </Reference>
-    <Reference Include="Optimization">
-      <HintPath>..\libs\Optimization.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="RestSharp">
       <HintPath>..\libs\RestSharp.dll</HintPath>
@@ -57,6 +54,7 @@
     <Compile Include="OptimizationScalarmParameter.cs" />
     <Compile Include="OptimizationSupervisorConfigFactory.cs" />
     <Compile Include="OptimizationUtils\ScalarmEvaluator.cs" />
+    <Compile Include="OptimizationUtils\PsoUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -70,6 +68,10 @@
     <ProjectReference Include="..\..\..\..\scalarm_client_csharp\scalarm_client_csharp\scalarm_client_csharp.csproj">
       <Project>{AC52A725-90C8-4742-AB35-C221297EE872}</Project>
       <Name>scalarm_client_csharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Virtroll\Optimization_CSharp\Optimization\Optimization.csproj">
+      <Project>{DAAE5A08-80CD-465A-8069-E522EFE70121}</Project>
+      <Name>Optimization</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
