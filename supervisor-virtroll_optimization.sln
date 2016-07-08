@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtrollOptimization", "VirtrollOptimization\VirtrollOptimization.csproj", "{32E8D42C-1EF4-4AAB-A47B-C392177CE003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scalarm_client_csharp", "..\..\..\scalarm_client_csharp\scalarm_client_csharp\scalarm_client_csharp.csproj", "{AC52A725-90C8-4742-AB35-C221297EE872}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optimization", "..\..\..\..\Virtroll\Optimization_CSharp\Optimization\Optimization.csproj", "{DAAE5A08-80CD-465A-8069-E522EFE70121}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -17,15 +13,6 @@ Global
 		{32E8D42C-1EF4-4AAB-A47B-C392177CE003}.Debug|x86.Build.0 = Debug|x86
 		{32E8D42C-1EF4-4AAB-A47B-C392177CE003}.Release|x86.ActiveCfg = Release|x86
 		{32E8D42C-1EF4-4AAB-A47B-C392177CE003}.Release|x86.Build.0 = Release|x86
-		{AC52A725-90C8-4742-AB35-C221297EE872}.Debug|x86.ActiveCfg = Debug|x86
-		{AC52A725-90C8-4742-AB35-C221297EE872}.Debug|x86.Build.0 = Debug|x86
-		{AC52A725-90C8-4742-AB35-C221297EE872}.Release|x86.ActiveCfg = Release|x86
-		{AC52A725-90C8-4742-AB35-C221297EE872}.Release|x86.Build.0 = Release|x86
-		{DAAE5A08-80CD-465A-8069-E522EFE70121}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DAAE5A08-80CD-465A-8069-E522EFE70121}.Debug|x86.Build.0 = Debug|Any CPU
-		{DAAE5A08-80CD-465A-8069-E522EFE70121}.Release|x86.ActiveCfg = Release|Any CPU
-		{DAAE5A08-80CD-465A-8069-E522EFE70121}.Release|x86.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = VirtrollOptimization\VirtrollOptimization.csproj
 	EndGlobalSection

@@ -2,18 +2,19 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.Workbench ActiveDocument="VirtrollOptimization/OptimizationSupervisorConfig.cs">
     <Files>
-      <File FileName="VirtrollOptimization/SupervisorConfig.cs" Line="132" Column="5" />
-      <File FileName="VirtrollOptimization/VirtrollOptimizationMain.cs" Line="62" Column="11" />
-      <File FileName="../../../scalarm_client_csharp/scalarm_client_csharp/Client.cs" Line="51" Column="1" />
-      <File FileName="VirtrollOptimization/OptimizationUtils/GeneticUtils.cs" Line="11" Column="86" />
-      <File FileName="VirtrollOptimization/OptimizationUtils/CommonOptimizationUtils.cs" Line="19" Column="42" />
-      <File FileName="VirtrollOptimization/OptimizationSupervisorConfigFactory.cs" Line="36" Column="3" />
-      <File FileName="VirtrollOptimization/OptimizationSupervisorConfig.cs" Line="37" Column="106" />
+      <File FileName="VirtrollOptimization/SupervisorConfig.cs" Line="1" Column="1" />
+      <File FileName="VirtrollOptimization/VirtrollOptimizationMain.cs" Line="1" Column="1" />
+      <File FileName="../../../scalarm_client_csharp/scalarm_client_csharp/Client.cs" Line="1" Column="1" />
+      <File FileName="VirtrollOptimization/OptimizationUtils/GeneticUtils.cs" Line="1" Column="1" />
+      <File FileName="VirtrollOptimization/OptimizationUtils/CommonOptimizationUtils.cs" Line="1" Column="1" />
+      <File FileName="VirtrollOptimization/OptimizationSupervisorConfigFactory.cs" Line="1" Column="1" />
+      <File FileName="VirtrollOptimization/OptimizationSupervisorConfig.cs" Line="37" Column="4" />
+      <File FileName="VirtrollOptimization/OptimizationUtils/PsoUtils.cs" Line="1" Column="1" />
+      <File FileName="VirtrollOptimization/OptimizationUtils/HookeJeevesUtils.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="scalarm_client_csharp" expanded="True" />
           <Node name="VirtrollOptimization" expanded="True">
             <Node name="References" expanded="True" />
             <Node name="OptimizationUtils" expanded="True" />
