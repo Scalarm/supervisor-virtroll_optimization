@@ -80,7 +80,7 @@ Configuration keys can be divided into few groups described below.
     * ~~``type``: string, currently not used - *all parameters should be float*~~
     * ``min``: float, lower limit of parameter value range to search
     * ``max``: float, upper limit of parameter value range to search
-~~* ``fake_experiment`` (optional): boolean, if true - do not use real Scalarm server, randomly generate results instead and write optimization results to stdout~~
+* ``fake_experiment`` (optional): boolean, if true - do not use real Scalarm server, randomly generate results instead and write optimization results to stdout
 
 ### Common optimization configuration keys
 
