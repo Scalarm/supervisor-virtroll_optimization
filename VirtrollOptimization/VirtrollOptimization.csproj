@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{32E8D42C-1EF4-4AAB-A47B-C392177CE003}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -33,12 +33,20 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=c7439020c8fedf87">
-      <Private>False</Private>
       <Package>monodevelop</Package>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="RestSharp">
       <HintPath>..\libs\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Optimization">
+      <HintPath>..\libs\Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="Scalarm">
+      <HintPath>..\libs\Scalarm.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -63,15 +71,5 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include="config.json.example" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\scalarm_client_csharp\scalarm_client_csharp\scalarm_client_csharp.csproj">
-      <Project>{AC52A725-90C8-4742-AB35-C221297EE872}</Project>
-      <Name>scalarm_client_csharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\Virtroll\Optimization_CSharp\Optimization\Optimization.csproj">
-      <Project>{DAAE5A08-80CD-465A-8069-E522EFE70121}</Project>
-      <Name>Optimization</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

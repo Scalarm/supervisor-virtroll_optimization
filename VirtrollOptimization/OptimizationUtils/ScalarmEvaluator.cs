@@ -11,6 +11,13 @@ namespace VirtrollOptimization
 {
 	public class ScalarmEvaluator
 	{
+		const int MAX_FAILS = 5*60*24*1;
+		const int MAX_FAILS_NO_SIM = 5*60*24*4;
+		const int FAIL_WAIT_SEC = 20;
+
+		int failCount = 0;
+		int failCountNoSim = 0;
+
 		public ScalarmParameter[] ScalarmParameters {
 			get;
 			set;
@@ -84,15 +91,33 @@ namespace VirtrollOptimization
 		// TODO: ignore N exceptions (or for N amount of time...)
 		private bool WaitAndIgnoreExceptions()
 		{
-			try
-			{
-				this.Experiment.WaitForDone();
-				return true;
-			}
-			catch (Exception ex)
-			{
-				Logger.Info(String.Format("An exception occured on waiting for results: {0}", ex.ToString()));
-				return false;
+			while (true) {
+				try {
+					this.Experiment.WaitForDone ();
+					return true;
+				} catch (NoActiveSimulationManagersException simExc) {
+					failCountNoSim += 1;
+					Logger.Info (String.Format("There are no active Simulations Manager (wait {0}s, try {1}/{2})", FAIL_WAIT_SEC, failCountNoSim, MAX_FAILS_NO_SIM));
+					if (failCount > MAX_FAILS_NO_SIM) {
+						Logger.Info (
+							String.Format ("Maximum time waiting for Simulation Managers exceeded when waiting for results! ({0})", MAX_FAILS_NO_SIM)
+						);
+						return false;
+					}
+					Thread.Sleep (1000 * FAIL_WAIT_SEC);
+				} catch (Exception ex) {
+					failCount += 1;
+					Logger.Info ("An exception occured when waiting for results:");
+					Logger.Info (ex.ToString ());
+					if (failCount > MAX_FAILS) {
+						Logger.Info (
+							String.Format ("Maximum count of fails exceeded when waiting for results! ({0})", MAX_FAILS)
+						);
+						return false;
+					}
+					Logger.Info (String.Format("Will retry in {0} seconds (try {1}/{2})", FAIL_WAIT_SEC, failCount, MAX_FAILS));
+					Thread.Sleep (1000 * FAIL_WAIT_SEC);
+				}
 			}
 		}
 
