@@ -11,7 +11,7 @@ namespace VirtrollOptimization
 {
 	public class ScalarmEvaluator
 	{
-		const int MAX_FAILS = 5*60*24*1;
+		const int MAX_FAILS = 3;
 		const int MAX_FAILS_NO_SIM = 5*60*24*4;
 		const int FAIL_WAIT_SEC = 20;
 
