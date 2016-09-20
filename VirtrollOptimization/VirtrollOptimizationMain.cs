@@ -11,7 +11,7 @@ namespace VirtrollOptimization
 {
 	class VirtrollOptimizationMain
 	{
-		public const string VERSION = "2016_09_16";
+		public const string VERSION = "2016_09_20";
 
 		static Scalarm.Client Client = null;
 		static Scalarm.Experiment Experiment = null;
