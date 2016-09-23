@@ -38,9 +38,11 @@ namespace VirtrollOptimization
 		// not neccessarily - it can be a method in class with state (quicker solution)
 		public void ScalarmFunctionEvaluator(List<OptimizationPoint> optimizationPoints)
 		{
+			int pointsCount = optimizationPoints.Count();
+
 			// prepare points
 			List<Scalarm.ValuesMap> scalarmPoints = new List<ValuesMap>();
-			for (int i = 0; i < optimizationPoints.Count; ++i)
+			for (int i = 0; i < pointsCount; ++i)
 			{
 				OptimizationPoint optPoint = optimizationPoints[i];
 
@@ -55,6 +57,9 @@ namespace VirtrollOptimization
 
 			/// delegate computations to Scalarm
 
+			List<int> indexes = Experiment.SchedulePoints(scalarmPoints);
+			Logger.Info (String.Format("Scheduled points indexes: {0}", indexes));
+
 			Experiment.SchedulePoints(scalarmPoints);
 
 			int wc = 0;
@@ -68,11 +73,22 @@ namespace VirtrollOptimization
 
 			/// get results
 
-			var results = Experiment.GetResults();
+			// get size, to get last results
+			Experiment currentExp = Experiment.Client.GetExperimentById<SupervisedExperiment>(Experiment.Id);
+			var currentExpSize = currentExp.Size;
+
+			var getResultsOptions = new GetResultsOptions () {
+				WithIndex = true,
+				MinIndex = currentExpSize - pointsCount,
+				MaxIndex = currentExpSize,
+			};
+
+			var results = Experiment.GetResults(getResultsOptions);
 			for (int i = 0; i < optimizationPoints.Count; ++i)
 			{
 				// TODO: fun(OptimizationPoint) -> result
-				SimulationParams scalarmResult = this.FindScalarmPoint(results, optimizationPoints[i]);
+				// simulation_indexes are numbered from 1
+				SimulationParams scalarmResult = results.First(r => Convert.ToInt32(r.Output["simulation_index"]) == i+1); // this.FindScalarmPoint(results, optimizationPoints[i]);
 
 				// FIXME - use output by name given
 				double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
