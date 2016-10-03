@@ -76,21 +76,29 @@ namespace VirtrollOptimization
 			// get size, to get last results
 			Experiment currentExp = Experiment.Client.GetExperimentById<SupervisedExperiment>(Experiment.Id);
 			var currentExpSize = currentExp.Size;
+			var oldExpSize = currentExpSize - pointsCount;
 
 			var getResultsOptions = new GetResultsOptions () {
 				WithIndex = true,
-				MinIndex = currentExpSize - pointsCount,
+				MinIndex = oldExpSize+1,
 				MaxIndex = currentExpSize,
 			};
 
 			var results = Experiment.GetResults(getResultsOptions);
 			for (int i = 0; i < optimizationPoints.Count; ++i)
 			{
-				// TODO: fun(OptimizationPoint) -> result
 				// simulation_indexes are numbered from 1
-				SimulationParams scalarmResult = results.First(r => Convert.ToInt32(r.Output["simulation_index"]) == i+1); // this.FindScalarmPoint(results, optimizationPoints[i]);
+				SimulationParams scalarmResult = null;
+				int searchedIndex = i + oldExpSize + 1;
+				foreach (SimulationParams r in results) {
+					int resultIndex = Convert.ToInt32(r.Output["simulation_index"]);
+					if (searchedIndex == resultIndex) {
+						scalarmResult = r;
+						break;
+					}
+				}
 
-				// FIXME - use output by name given
+
 				double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
 
 				optimizationPoints[i].PartialResults = new List<double>()
@@ -99,8 +107,6 @@ namespace VirtrollOptimization
 				};
 
 			}
-
-			//Logger.Info("min finded...");
 		}
 
 		
@@ -134,40 +140,6 @@ namespace VirtrollOptimization
 					Logger.Info (String.Format("Will retry in {0} seconds (try {1}/{2})", FAIL_WAIT_SEC, failCount, MAX_FAILS));
 					Thread.Sleep (1000 * FAIL_WAIT_SEC);
 				}
-			}
-		}
-
-		
-		// TODO: reimplement this and Scalarm backend
-		/// <summary>
-		/// Return a specific SimulationParams (Scalarm Point) from collection that matches the provided
-		/// OptimizationPoint (that is generated in optimization lib).
-		/// </summary>
-		public SimulationParams FindScalarmPoint(IList<SimulationParams> scalarmResults, OptimizationPoint optimizationPoint)
-		{
-			// TODO: let's assume, we have a SimulationParams list with indexes and we know which OP point have which index...
-			// TODO: convert OptimizationPoint to SimulationParams OR provide SimulationParams directly to this fun
-			// TODO: find in SimulationParams
-
-			// FIXME: optimize - compute it earlier
-			string[] iids = this.ScalarmParameters.Select(i => i.id).ToArray();
-
-			// FIXME: maybe just use conversions as in optimization example code
-
-			var optPointJson = JsonConvert.SerializeObject(optimizationPoint.Inputs);
-
-			// TODO: json repr cache?
-			var res = scalarmResults.Where(
-				r => JsonConvert.SerializeObject(r.Input.Flatten(iids)) == optPointJson
-			);
-
-			if (res.Any()) {
-				return res.Last();
-			} else {
-				Logger.Error(String.Format(
-					"Result not found for optimization point{0}", JsonConvert.SerializeObject(optimizationPoint.Inputs)
-					));
-				return null;
 			}
 		}
 	}
