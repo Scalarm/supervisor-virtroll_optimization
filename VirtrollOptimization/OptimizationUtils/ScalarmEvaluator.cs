@@ -11,9 +11,9 @@ namespace VirtrollOptimization
 {
 	public class ScalarmEvaluator
 	{
-		const int MAX_FAILS = 3;
-		const int MAX_FAILS_NO_SIM = 5*60*24*4;
 		const int FAIL_WAIT_SEC = 20;
+		// four days
+		const int MAX_FAILS_NO_SIM = 5*60*24*4;
 
 		int failCount = 0;
 		int failCountNoSim = 0;
@@ -58,7 +58,7 @@ namespace VirtrollOptimization
 			/// delegate computations to Scalarm
 
 			List<int> indexes = Experiment.SchedulePoints(scalarmPoints);
-			Logger.Info (String.Format("Scheduled points indexes: {0}", indexes));
+			Logger.Info (String.Format("Scheduled points indexes: {0}", String.Join(", ", indexes)));
 
 			Experiment.SchedulePoints(scalarmPoints);
 
@@ -68,7 +68,7 @@ namespace VirtrollOptimization
 				Thread.Sleep(1000 * 10);
 
 				++wc;
-				if (wc == 10) throw new Exception("Scalarm Wait _daniel");
+				if (wc == 10) throw new Exception("Max count of exceptions when waiting for results reached.");
 			}
 
 			/// get results
@@ -85,6 +85,9 @@ namespace VirtrollOptimization
 			};
 
 			var results = Experiment.GetResults(getResultsOptions);
+
+			// match Scalarm results to optiomization points partial results
+			// using simulation indexes
 			for (int i = 0; i < optimizationPoints.Count; ++i)
 			{
 				// simulation_indexes are numbered from 1
@@ -98,26 +101,32 @@ namespace VirtrollOptimization
 					}
 				}
 
+				if (scalarmResult == null) {
+					Logger.Error(String.Format("Could not find Scalarm result for {0}",
+						String.Join(", ", optimizationPoints[i].Inputs)));
+				} else {
+					double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
 
-				double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
-
-				optimizationPoints[i].PartialResults = new List<double>()
-				{
-					moe
-				};
-
+					optimizationPoints[i].PartialResults = new List<double>()
+					{
+						moe
+					};
+				}
 			}
 		}
 
-		
-		// TODO: ignore N exceptions (or for N amount of time...)
+
+		/// <summary>
+		/// Uses Experiment.WaitForDone and handles NoSimulationManagersExceptions.
+		/// </summary>
+		/// <returns><c>true</c>, if ended wating for done, <c>false</c> when maximum exceptions count reached.</returns>
 		private bool WaitAndIgnoreExceptions()
 		{
 			while (true) {
 				try {
 					this.Experiment.WaitForDone ();
 					return true;
-				} catch (NoActiveSimulationManagersException simExc) {
+				} catch (NoActiveSimulationManagersException) {
 					failCountNoSim += 1;
 					Logger.Info (String.Format("There are no active Simulations Manager (wait {0}s, try {1}/{2})", FAIL_WAIT_SEC, failCountNoSim, MAX_FAILS_NO_SIM));
 					if (failCount > MAX_FAILS_NO_SIM) {
@@ -126,18 +135,6 @@ namespace VirtrollOptimization
 						);
 						return false;
 					}
-					Thread.Sleep (1000 * FAIL_WAIT_SEC);
-				} catch (Exception ex) {
-					failCount += 1;
-					Logger.Info ("An exception occured when waiting for results:");
-					Logger.Info (ex.ToString ());
-					if (failCount > MAX_FAILS) {
-						Logger.Info (
-							String.Format ("Maximum count of fails exceeded when waiting for results! ({0})", MAX_FAILS)
-						);
-						return false;
-					}
-					Logger.Info (String.Format("Will retry in {0} seconds (try {1}/{2})", FAIL_WAIT_SEC, failCount, MAX_FAILS));
 					Thread.Sleep (1000 * FAIL_WAIT_SEC);
 				}
 			}
