@@ -12,7 +12,7 @@ namespace VirtrollOptimization
 	public class OptimizationNewOptimumFoundState {
 		public string event_type = "new_optimum_found";
 		public double moe;
-		public double[] values;
+		public IList<double> values;
 		public int iteration;
 		public int evaluations_count;
 	}
@@ -51,14 +51,10 @@ namespace VirtrollOptimization
 				evaluations_count = e.EvalExecutionCount
 			};
 
-			var request = new RestRequest("/experiments/{id}/supervisor_run/state_history", Method.POST);
-			request.AddUrlSegment("id", Experiment.Id);
-			request.AddParameter("state", JsonConvert.SerializeObject(intermediateResult));
-			IRestResponse restResponse = client.Execute(request);
-			if (restResponse.ErrorException != null) {
-				const string message = "HTTP request error on sending progress_info";
-				Logger.Info(String.Format("{0}: {1}", message, restResponse.ErrorMessage));
-			} else {
+			try {
+				Experiment.AddSupervisorRunState(intermediateResult);
+			} catch (InvalidResponseException error) {
+				Logger.Error(String.Format("Could not send supervisor run state: {0}", error.ToString()));
 			}
 
 			this.Experiment.MarkAsComplete(JsonConvert.SerializeObject(finalResults));
@@ -69,10 +65,6 @@ namespace VirtrollOptimization
 			Logger.Info("New minimum: " + e.Point.Error 
 			            + ", iteration: " + e.Step 
 			            + ", evaluations count: " + e.EvalExecutionCount);
-			// TODO: save to object state
-			// CommonOptimizationUtils.SaveOptimum(e, "Genetic_results.txt");
-
-			Scalarm.Client client = Experiment.Client;
 
 			OptimizationNewOptimumFoundState intermediateResult = new OptimizationNewOptimumFoundState () {
 				moe = e.Point.Error,
@@ -81,27 +73,11 @@ namespace VirtrollOptimization
 				values = e.Point.Values
 			};
 
-			// FIXME: make a method in Scalarm Client lib
-			var request = new RestRequest("/experiments/{id}/supervisor_run/state_history", Method.POST);
-			request.AddUrlSegment("id", Experiment.Id);
-			request.AddParameter("state", JsonConvert.SerializeObject(intermediateResult));
-			IRestResponse restResponse = client.Execute(request);
-			if (restResponse.ErrorException != null) {
-				const string message = "HTTP request error on sending progress_info";
-				Logger.Info(String.Format("{0}: {1}", message, restResponse.ErrorMessage));
-			} else {
-				// FIXME: handle errors (error in response json)
+			try {
+				Experiment.AddSupervisorRunState(intermediateResult);
+			} catch (InvalidResponseException error) {
+				Logger.Error(String.Format("Could not send supervisor run state: {0}", error.ToString()));
 			}
-		}
-
-		public static void SaveOptimum(OptimumEventArgs e, string filename)
-		{
-			filename = filename.Replace(":", "_");
-			filename = filename.Replace("-", "_");
-
-			System.IO.StreamWriter file = new System.IO.StreamWriter(filename, true);
-			file.Write(e.ToString());
-			file.Close();
 		}
 
 		public void NextStep(object sender, NextStepEventArgs e)
@@ -113,18 +89,10 @@ namespace VirtrollOptimization
 				evaluations_count = e.EvalExecutionCount
 			};
 
-			Scalarm.Client client = Experiment.Client;
-
-			// FIXME: make a method in Scalarm Client lib
-			var request = new RestRequest("/experiments/{id}/supervisor_run/state_history", Method.POST);
-			request.AddUrlSegment("id", Experiment.Id);
-			request.AddParameter("state", JsonConvert.SerializeObject(intermediateResult));
-			IRestResponse restResponse = client.Execute(request);
-			if (restResponse.ErrorException != null) {
-				const string message = "HTTP request error on sending progress_info";
-				Logger.Info(String.Format("{0}: {1}", message, restResponse.ErrorMessage));
-			} else {
-				// FIXME: handle errors (error in response json)
+			try {
+				Experiment.AddSupervisorRunState(intermediateResult);
+			} catch (InvalidResponseException error) {
+				Logger.Error(String.Format("Could not send supervisor run state: {0}", error.ToString()));
 			}
 		}
 
