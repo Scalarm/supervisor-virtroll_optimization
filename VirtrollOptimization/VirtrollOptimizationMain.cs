@@ -12,7 +12,7 @@ namespace VirtrollOptimization
 {
 	class VirtrollOptimizationMain
 	{
-		public const string VERSION = "2016_10_04-1";
+		public const string VERSION = "2016_10_04-2";
 
 		// Usage: mono VirtrollOptimization.exe -> will read config from config.json
 		// Usage: mono VirtrollOptimization.exe -config <path> -> read config from path
