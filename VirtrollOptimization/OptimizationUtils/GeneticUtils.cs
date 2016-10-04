@@ -17,7 +17,7 @@ namespace VirtrollOptimization
 
 		public override void BindEvents()
 		{
-			this.Optimizer.NextStepEvent += CommonOptimizationUtils.NextStep;
+			this.Optimizer.NextStepEvent += this.NextStep;
 			this.Optimizer.NewOptimumFindedEvent += this.NewOptimumFound;
 			this.Optimizer.EndOfCalculationEvent += this.EndOfCalculation;
 		}

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using Optimization.Core;
+using Common;
 using Scalarm;
 using RestSharp;
 using System.Net;
@@ -11,10 +12,7 @@ namespace VirtrollOptimization
 {
 	class VirtrollOptimizationMain
 	{
-		public const string VERSION = "2016_10_03-1409";
-
-		static Scalarm.Client Client = null;
-		static Scalarm.Experiment Experiment = null;
+		public const string VERSION = "2016_10_04-1";
 
 		// Usage: mono VirtrollOptimization.exe -> will read config from config.json
 		// Usage: mono VirtrollOptimization.exe -config <path> -> read config from path
@@ -52,34 +50,39 @@ namespace VirtrollOptimization
 						optimizer.Optimize(
 							config.GeneticPopulationStart,
 							config.GeneticPopulationMax,
+							config.GeneticMutationsCount,
+							config.GeneticCrossesCount,
 						    config.OptimizationMaxError,
 		                    config.OptimizationMaxIterations
 						);
+
 					}).Start();
 				}
 				break;
+// TODO: not ready yet in library
 			case "hooke_jeeves":
-				{
-					Optimization.HookeJeeves optimizer = new Optimization.HookeJeeves(
-					evaluator.ScalarmFunctionEvaluator,
-						parameters,
-						null
-					);
-
-					new HookeJeevesUtils(experiment, optimizer).BindEvents();
-
-					new Thread(() =>
-					{
-						optimizer.Optimize(
-							config.HookeJeevesStepSizes, 
-							config.HookeJeevesMinStepSizes, 
-							config.HookeJeevesWorkingStepMultiplier,
-							config.OptimizationMaxError,
-							config.OptimizationMaxIterations,
-							config.HookeJeevesParallel);
-					}).Start();
-				}
-				break;
+				throw new Exception("Hooke-Jeeves is not supported in current version of optimization library");
+//				{
+//					Optimization.HookeJeeves optimizer = new Optimization.HookeJeeves(
+//					evaluator.ScalarmFunctionEvaluator,
+//						parameters,
+//						null
+//					);
+//
+//					new HookeJeevesUtils(experiment, optimizer).BindEvents();
+//
+//					new Thread(() =>
+//					{
+//						optimizer.Optimize(
+//							config.HookeJeevesStepSizes, 
+//							config.HookeJeevesMinStepSizes, 
+//							config.HookeJeevesWorkingStepMultiplier,
+//							config.OptimizationMaxError,
+//							config.OptimizationMaxIterations,
+//							config.HookeJeevesParallel);
+//					}).Start();
+//				}
+//				break;
 			case "pso":
 			{
 				Optimization.Pso optimizer = new Optimization.Pso(

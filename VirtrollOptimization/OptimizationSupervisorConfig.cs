@@ -12,6 +12,12 @@ namespace VirtrollOptimization
 
 		public int GeneticPopulationStart { get; set; }
 		public int GeneticPopulationMax { get; set; }
+		// how many specimens should be created in each iteration by mutation
+		// typically ~1/3, 1/5 of population start
+		public int GeneticMutationsCount { get; set; }
+		// how many specimens should be created in each iteration by crossing
+		// typically ~1/3, 1/5 of population start
+		public int GeneticCrossesCount { get; set; }
 
 		public double HookeJeevesWorkingStepMultiplier { get; set; }
 		public bool HookeJeevesParallel { get; set; }
@@ -42,6 +48,8 @@ namespace VirtrollOptimization
 			case "genetic":
 				this.GeneticPopulationStart = OptionalJsonGet<int>(appConfig, "genetic_population_start", 10);
 				this.GeneticPopulationMax = OptionalJsonGet<int>(appConfig, "genetic_population_max", 20);
+				this.GeneticMutationsCount = appConfig["genetic_mutations_count"].ToObject<int>();
+				this.GeneticCrossesCount = appConfig["genetic_crosses_count"].ToObject<int>();
 				break;
 			case "hoooke_jeeves":
 				this.HookeJeevesWorkingStepMultiplier = OptionalJsonGet<double>(appConfig, "hj_working_step_multiplier", 1);
