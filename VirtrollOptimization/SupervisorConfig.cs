@@ -5,6 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using Optimization.Core;
 using System.Linq;
+using Common;
 
 namespace VirtrollOptimization
 {
@@ -127,7 +128,7 @@ namespace VirtrollOptimization
 			{
 				for (int i=0; i < this.Parameters.Count(); ++i) {
 //					Logger.Info(this.Parameters[i].ToString());
-					properties.Add(new InputProperties(InputValuesType.Range, this.Parameters[i].Range));
+					properties.Add(new InputProperties(i, this.Parameters[i].id, InputValuesType.Range, this.Parameters[i].Range));
 				}
 			}
 

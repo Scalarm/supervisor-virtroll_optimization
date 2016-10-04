@@ -9,8 +9,16 @@ using RestSharp;
 
 namespace VirtrollOptimization
 {
-	public class OptimizationIntermediateResult {
+	public class OptimizationNewOptimumFoundState {
+		public string event_type = "new_optimum_found";
 		public double moe;
+		public double[] values;
+		public int iteration;
+		public int evaluations_count;
+	}
+
+	public class OptimizationNextStepState {
+		public string event_type = "next_step"; 
 		public int iteration;
 		public int evaluations_count;
 	}
@@ -29,18 +37,36 @@ namespace VirtrollOptimization
 			finalResults.Add("method_type", this._methodType);
 			finalResults.Add("step", e.Step);
 			finalResults.Add("eval_execution_count", e.EvalExecutionCount);
-			finalResults.Add("parameters", e.Point.Inputs);
-			finalResults.Add("values", e.Point.PartialResults);
-			finalResults.Add("global_value", e.Point.Result);
+			finalResults.Add("parameters", e.Point.Values);
+			finalResults.Add("global_error", e.Point.Error);
 			// TODO: pareto
 			// TODO: population
+
+			Scalarm.Client client = Experiment.Client;
+
+			OptimizationNewOptimumFoundState intermediateResult = new OptimizationNewOptimumFoundState () {
+				event_type = "end_of_calculations",
+				moe = e.Point.Error,
+				iteration = e.Step,
+				evaluations_count = e.EvalExecutionCount
+			};
+
+			var request = new RestRequest("/experiments/{id}/supervisor_run/state_history", Method.POST);
+			request.AddUrlSegment("id", Experiment.Id);
+			request.AddParameter("state", JsonConvert.SerializeObject(intermediateResult));
+			IRestResponse restResponse = client.Execute(request);
+			if (restResponse.ErrorException != null) {
+				const string message = "HTTP request error on sending progress_info";
+				Logger.Info(String.Format("{0}: {1}", message, restResponse.ErrorMessage));
+			} else {
+			}
 
 			this.Experiment.MarkAsComplete(JsonConvert.SerializeObject(finalResults));
 		}
 
 		public void NewOptimumFound(object sender, OptimumEventArgs e)
 		{
-			Logger.Info("New minimum: " + e.Point.Result 
+			Logger.Info("New minimum: " + e.Point.Error 
 			            + ", iteration: " + e.Step 
 			            + ", evaluations count: " + e.EvalExecutionCount);
 			// TODO: save to object state
@@ -48,10 +74,11 @@ namespace VirtrollOptimization
 
 			Scalarm.Client client = Experiment.Client;
 
-			OptimizationIntermediateResult intermediateResult = new OptimizationIntermediateResult () {
-				moe = e.Point.Result,
+			OptimizationNewOptimumFoundState intermediateResult = new OptimizationNewOptimumFoundState () {
+				moe = e.Point.Error,
 				iteration = e.Step,
-				evaluations_count = e.EvalExecutionCount
+				evaluations_count = e.EvalExecutionCount,
+				values = e.Point.Values
 			};
 
 			// FIXME: make a method in Scalarm Client lib
@@ -77,9 +104,28 @@ namespace VirtrollOptimization
 			file.Close();
 		}
 
-		public static void NextStep(object sender, NextStepEventArgs e)
+		public void NextStep(object sender, NextStepEventArgs e)
 		{
 			Logger.Info("Iteration: " + e.Step + ", eval execution count: " + e.EvalExecutionCount);
+
+			OptimizationNextStepState intermediateResult = new OptimizationNextStepState () {
+				iteration = e.Step,
+				evaluations_count = e.EvalExecutionCount
+			};
+
+			Scalarm.Client client = Experiment.Client;
+
+			// FIXME: make a method in Scalarm Client lib
+			var request = new RestRequest("/experiments/{id}/supervisor_run/state_history", Method.POST);
+			request.AddUrlSegment("id", Experiment.Id);
+			request.AddParameter("state", JsonConvert.SerializeObject(intermediateResult));
+			IRestResponse restResponse = client.Execute(request);
+			if (restResponse.ErrorException != null) {
+				const string message = "HTTP request error on sending progress_info";
+				Logger.Info(String.Format("{0}: {1}", message, restResponse.ErrorMessage));
+			} else {
+				// FIXME: handle errors (error in response json)
+			}
 		}
 
 		public CommonOptimizationUtils(SupervisedExperiment experiment) {

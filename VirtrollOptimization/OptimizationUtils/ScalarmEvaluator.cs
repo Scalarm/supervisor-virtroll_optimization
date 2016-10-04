@@ -49,7 +49,7 @@ namespace VirtrollOptimization
 				Scalarm.ValuesMap paramValues = new Scalarm.ValuesMap();
 
 				for (int sp = 0; sp < this.ScalarmParameters.Length; ++sp) {
-					paramValues.Add(this.ScalarmParameters[sp].id, optPoint.Inputs[sp]);
+					paramValues.Add(this.ScalarmParameters[sp].id, optPoint.Values[sp]);
 				}
 
 				scalarmPoints.Add(paramValues);
@@ -59,8 +59,6 @@ namespace VirtrollOptimization
 
 			List<int> indexes = Experiment.SchedulePoints(scalarmPoints);
 			Logger.Info (String.Format("Scheduled points indexes: {0}", String.Join(", ", indexes)));
-
-			Experiment.SchedulePoints(scalarmPoints);
 
 			int wc = 0;
 			while (!this.WaitAndIgnoreExceptions())
@@ -103,11 +101,11 @@ namespace VirtrollOptimization
 
 				if (scalarmResult == null) {
 					Logger.Error(String.Format("Could not find Scalarm result for {0}",
-						String.Join(", ", optimizationPoints[i].Inputs)));
+						String.Join(", ", optimizationPoints[i].Values)));
 				} else {
 					double moe = Convert.ToDouble(scalarmResult.Output[this.MoeName]);
 
-					optimizationPoints[i].PartialResults = new List<double>()
+					optimizationPoints[i].PartialErrors = new List<double>()
 					{
 						moe
 					};

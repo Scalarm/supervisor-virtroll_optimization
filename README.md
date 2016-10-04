@@ -96,8 +96,10 @@ NOTE: see ``VirtrollOptimization/OptimizationSupervisorConfig`` for default prop
 
 * ``genetic_population_start`` (integer > 0)
 * ``genetic_population_max`` (integer > 0)
+* ``genetic_mutations_count`` (integer > 0)
+* ``genetic_crosses_count`` (integer > 0)
 
-#### Hooke-Jeeves algorithm configuration
+#### Hooke-Jeeves algorithm configuration (CURRENTLY DISABLED!)
 
 * ``hj_working_step_multiplier`` (integer > 0)
 * ``hj_parallel`` (boolean)
@@ -154,7 +156,9 @@ See also ``VirtrollOptimization/config.json.example`` for example config (some o
   "method_type": "genetic",
 
   "genetic_population_start": 12,
-  "genetic_population_max": 20
+  "genetic_population_max": 20,
+  "genetic_mutations_count": 3,
+  "genetic_crosses_count": 3
 }
 ```
 
@@ -241,8 +245,7 @@ The output is a JSON.
 * ``step`` - **integer**, value of ``OptimumEventArgs.Step`` on ``EndOfCalculation`` event (Optimization library)
 * ``eval_execution_count`` - **integer**, value of ``OptimumEventArgs.EvalExecutionCount`` on ``EndOfCalculation`` event (Optimization library)
 * ``parameters`` - **array of floats**, input values of found optimum point; value of ``OptimumEventArgs.Point.Input`` on ``EndOfCalculation`` event (Optimization library)
-* ``values`` - **array of floats**, list of results evaluated in each optimization step; value of ``OptimumEventArgs.Point.PartialResults`` on ``EndOfCalculation`` event (Optimization library)
-* ``global_value`` - **float**, final value of found optimum; value of ``OptimumEventArgs.Point.Result`` on ``EndOfCalculation`` event (Optimization library)
+* ``global_error`` - **float**, final value of found optimum; value of ``OptimumEventArgs.Point.Result`` on ``EndOfCalculation`` event (Optimization library)
 
 ## Output examples
 
@@ -260,6 +263,22 @@ The output is a JSON.
     "values": [
         -3490.9059587309985
     ],
-    "global_value": -3490.9059587309985
+    "global_error": -3490.9059587309985
 }
+```
+
+# Optimization intermediate results - state notification
+
+The optimizer sends state update to Scalarm on few optimization events:
+- next_step
+- new_optimum_found
+- end_of_calculations (one-time)
+
+State updates are send to ``<scalarm_base_url>/experiments/<experiment_id>/supervisor_run/state_history``
+and history of states can be fetched with ``GET <scalarm_base_url>/experiments/<experiment_id>/supervisor_run/state_history``.
+
+## Example of optimizer state history
+
+```
+[{"time":"2016-10-04T11:36:00.178Z","state":{"event_type":"new_optimum_found","moe":4.15193397158,"iteration":0,"evaluations_count":10}},{"time":"2016-10-04T11:36:00.198Z","state":{"event_type":"next_step","iteration":1,"evaluations_count":10}},{"time":"2016-10-04T11:36:23.221Z","state":{"event_type":"new_optimum_found","moe":2.31983742709,"iteration":1,"evaluations_count":20}},{"time":"2016-10-04T11:36:23.241Z","state":{"event_type":"next_step","iteration":2,"evaluations_count":20}},{"time":"2016-10-04T11:36:44.394Z","state":{"event_type":"new_optimum_found","moe":1.0,"iteration":2,"evaluations_count":30}},{"time":"2016-10-04T11:36:44.415Z","state":{"event_type":"next_step","iteration":3,"evaluations_count":30}},{"time":"2016-10-04T11:37:05.557Z","state":{"event_type":"next_step","iteration":4,"evaluations_count":40}},{"time":"2016-10-04T11:37:27.622Z","state":{"event_type":"next_step","iteration":5,"evaluations_count":50}},{"time":"2016-10-04T11:37:48.860Z","state":{"event_type":"next_step","iteration":6,"evaluations_count":60}},{"time":"2016-10-04T11:38:10.399Z","state":{"event_type":"next_step","iteration":7,"evaluations_count":70}},{"time":"2016-10-04T11:38:31.658Z","state":{"event_type":"next_step","iteration":8,"evaluations_count":80}},{"time":"2016-10-04T11:38:53.111Z","state":{"event_type":"next_step","iteration":9,"evaluations_count":90}},{"time":"2016-10-04T11:39:14.402Z","state":{"event_type":"next_step","iteration":10,"evaluations_count":100}},{"time":"2016-10-04T11:39:36.255Z","state":{"event_type":"next_step","iteration":11,"evaluations_count":110}},{"time":"2016-10-04T11:39:59.384Z","state":{"event_type":"next_step","iteration":12,"evaluations_count":120}},{"time":"2016-10-04T11:40:20.928Z","state":{"event_type":"next_step","iteration":13,"evaluations_count":130}},{"time":"2016-10-04T11:40:42.783Z","state":{"event_type":"next_step","iteration":14,"evaluations_count":140}},{"time":"2016-10-04T11:41:04.148Z","state":{"event_type":"next_step","iteration":15,"evaluations_count":150}},{"time":"2016-10-04T11:41:27.948Z","state":{"event_type":"next_step","iteration":16,"evaluations_count":160}},{"time":"2016-10-04T11:41:49.711Z","state":{"event_type":"next_step","iteration":17,"evaluations_count":170}},{"time":"2016-10-04T11:42:13.436Z","state":{"event_type":"next_step","iteration":18,"evaluations_count":180}},{"time":"2016-10-04T11:42:35.111Z","state":{"event_type":"next_step","iteration":19,"evaluations_count":190}},{"time":"2016-10-04T11:42:56.957Z","state":{"event_type":"next_step","iteration":20,"evaluations_count":200}},{"time":"2016-10-04T11:43:18.927Z","state":{"event_type":"end_of_calculations","moe":1.0,"iteration":20,"evaluations_count":210}}] 
 ```
